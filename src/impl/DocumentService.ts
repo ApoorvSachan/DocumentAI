@@ -10,7 +10,7 @@ export class DocumentService implements IDocumentService {
 
     public async documentAnalyseAsync(document: string): Promise<any> {
         const maxTokens = 2000;
-        let prompt = "extract information from this document in form of json key value pairs - ";
+        let prompt = "Please extract information from this document and give me a json with key value pair - `";
         const summary = [];
 
         const promptChunks = [];
@@ -21,7 +21,7 @@ export class DocumentService implements IDocumentService {
         for (const chunk of promptChunks) {
           const res = await openai.createCompletion({
             model: "text-davinci-003",
-            prompt: prompt + chunk,
+            prompt: prompt + chunk + '`',
             temperature: 0,
             max_tokens: maxTokens
           });
