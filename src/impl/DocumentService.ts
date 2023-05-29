@@ -10,7 +10,7 @@ export class DocumentService implements IDocumentService {
 
     public async documentAnalyseAsync(document: string): Promise<any> {
         const maxTokens = 2000;
-        let prompt = "Please extract information from this document and give me a json with key value pair - `";
+        let prompt = "Please extract information from this document  - `";
         const summary = [];
 
         const promptChunks = [];
@@ -32,7 +32,7 @@ export class DocumentService implements IDocumentService {
         return summary.join("");
       }
 
-      public async documentParseAsync(doc: string): Promise<any> {
+      public async documentParseAsync(doc: any): Promise<any> {
           // The full resource name of the processor, e.g.:
           // projects/project-id/locations/location/processor/processor-id
     
@@ -44,7 +44,7 @@ export class DocumentService implements IDocumentService {
           const request = {
             name,
             rawDocument: {
-              content: encodedImage,
+              content: doc,
               mimeType: 'application/pdf',
             },
           };

@@ -33,7 +33,7 @@ export class DocumentAiRoutes implements IRouteProvider {
         router.post(`/parse`, upload.single('pdf'), async (request: Request, response: Response) => {
             const filePath = request.file.path;
             const dataBuffer = fs.readFileSync(filePath);
-            const result = await this.documentService.documentParseAsync(dataBuffer.toString('base64'));
+            const result = await this.documentService.documentParseAsync(dataBuffer);
             response.status(200).send(result);
         });
 
