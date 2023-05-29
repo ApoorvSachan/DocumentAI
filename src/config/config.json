@@ -1,0 +1,11 @@
+{
+    "port": 3000,
+    "openai": {
+        "api_key": "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"
+    },
+    "googleDocumentAI": {
+        "projectId": "YOUR_PROJECT_ID",
+        "location": "YOUR_PROJECT_LOCATION",
+        "processorId": "YOUR_PROCESSOR_ID"
+    }
+}
