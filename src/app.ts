@@ -1,19 +1,35 @@
 import "reflect-metadata"
 import { ContainerFactory } from "./container-factory";
-import express, {Request, Response} from "express";
-import { DependencyKeys } from "./utils/constants";
-import * as config from './config/config.json';
+import "reflect-metadata";
+import * as express from "express";
+import { AppBuilder } from "./AppBuilder";
 import { IRouteProvider } from "./interfaces/IRouteProvider";
+import { DependencyKeys } from "./utils/constants";
 
+export class App {
 
-const app = express();
-app.use(express.json());
-app.listen(config.port, () => console.log(`listening on http://localhost:${config.port}`));
+    public readonly app: express.Express;
 
-const container = ContainerFactory.getContainer();
+    public constructor() {
 
-const router = express.Router();
-router.get("/", async (request: Request, response: Response) => { response.send("APIs Started!"); });
-const routeProviders = container.getAll<IRouteProvider>(DependencyKeys.Routes);
-routeProviders.forEach(routeProvider => routeProvider.configureRoutes(router));
-app.use("/", router);
+        const container = ContainerFactory.getContainer();
+
+        const router = express.Router();
+        router.get("/", (request, response) => { response.send("APIs Started!"); });
+        const routeProviders = container.getAll<IRouteProvider>(DependencyKeys.Routes);
+        routeProviders.forEach(routeProvider => routeProvider.configureRoutes(router));
+
+        this.app = new AppBuilder()
+            .withJsonContent()
+            .withRoute("/", router, [])
+            .withCors([])
+            .withAllowedOrigins([])
+            .build();
+    }
+
+    public static init(): express.Express {
+        return new App().app;
+    }
+}
+
+export default App.init();
