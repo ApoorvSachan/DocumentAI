@@ -57,7 +57,7 @@ export class DocumentService implements IDocumentService {
           const {text} = document;
         
           // Extract shards from the text field
-          const getText = textAnchor => {
+          const getText = (textAnchor: { textSegments: string | any[]; }) => {
             if (!textAnchor.textSegments || textAnchor.textSegments.length === 0) {
               return '';
             }
@@ -79,6 +79,16 @@ export class DocumentService implements IDocumentService {
             console.log(`Paragraph text:\n${paragraphText}`);
           }
 
+          let schema = [];
+          (document.pages ?? []).map((page: any) => {
+            (page.formFields ?? []).map((formField: any) => {
+              const fieldName = formField?.fieldName?.textAnchor?.content.replace(/\n/g, '');
+              const fieldValue = formField?.fieldValue?.textAnchor?.content.replace(/\n/g, '');
+              schema.push({[fieldName]: fieldValue});
+            });
+          });
+
+          document.schema = schema;
           return document;
         }
 }
