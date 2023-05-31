@@ -79,16 +79,18 @@ export class DocumentService implements IDocumentService {
             console.log(`Paragraph text:\n${paragraphText}`);
           }
 
-          let schema = [];
+          let pages = [];
           (document.pages ?? []).map((page: any) => {
+            let schema = [];
             (page.formFields ?? []).map((formField: any) => {
               const fieldName = formField?.fieldName?.textAnchor?.content.replace(/\n/g, '');
               const fieldValue = formField?.fieldValue?.textAnchor?.content.replace(/\n/g, '');
               schema.push({[fieldName]: fieldValue});
             });
+            pages.push(schema);
           });
 
-          document.schema = schema;
+          document.schema = pages;
           return document;
         }
 }
