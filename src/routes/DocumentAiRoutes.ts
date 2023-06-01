@@ -6,7 +6,8 @@ import { IRouteProvider } from "../interfaces/IRouteProvider";
 import { RouteBase } from "./RouteBase";
 import multer from 'multer';
 import fs from 'fs';
-import PDFParser from 'pdf-parse'
+import PDFParser from 'pdf-parse';
+import * as path from 'path'
 
 const upload = multer({ dest: 'uploads/' });
 
@@ -34,11 +35,12 @@ export class DocumentAiRoutes extends RouteBase implements IRouteProvider {
             });
         });
 
-        router.post(`/parse`, upload.single('pdf'), async (request: Request, response: Response) => {
+        router.post(`/parse`, upload.single('file'), async (request: Request, response: Response) => {
             this.safelyExecuteAsync(response, async () => {
                 const filePath = request.file.path;
                 const dataBuffer = fs.readFileSync(filePath);
-                const result = await this.documentService.documentParseAsync(dataBuffer);
+                const fileExtension = path.extname(request.file.originalname);
+                const result = await this.documentService.documentParseAsync(dataBuffer, fileExtension.slice(1));
                 response.status(200).send(result);
             });
         });

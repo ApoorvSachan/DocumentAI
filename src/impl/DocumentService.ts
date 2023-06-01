@@ -1,5 +1,5 @@
 import { injectable, inject } from "inversify";
-import { DependencyKeys } from "../utils/constants";
+import { FileType } from "../models/enums";
 import { IDocumentService } from "../interfaces/IDocumentService"
 import { openai } from "./openai"
 import { client } from "./GoogleDocAI"
@@ -32,20 +32,17 @@ export class DocumentService implements IDocumentService {
         return summary.join("");
       }
 
-      public async documentParseAsync(doc: any): Promise<any> {
+      public async documentParseAsync(doc: any, fileExtension: string): Promise<any> {
           // The full resource name of the processor, e.g.:
           // projects/project-id/locations/location/processor/processor-id
     
           const name = `projects/${config.googleDocumentAI.projectId}/locations/${config.googleDocumentAI.location}/processors/${config.googleDocumentAI.processorId}`;
         
-          // Convert the image data to a Buffer and base64 encode it.
-          const encodedImage = Buffer.from(doc).toString('base64');
-        
           const request = {
             name,
             rawDocument: {
               content: doc,
-              mimeType: 'application/pdf',
+              mimeType: FileType[fileExtension],
             },
           };
         
